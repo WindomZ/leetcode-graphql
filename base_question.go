@@ -37,21 +37,14 @@ func (q BaseQuestion) GetCodeDefinition(lang string) (code string, err error) {
 		return
 	}
 
-	type Code struct {
-		Text        string `json:"text"`
-		Value       string `json:"value"`
-		DefaultCode string `json:"defaultCode"`
-	}
-	var codes []Code
+	var codes Codes
 	if err = json.Unmarshal([]byte(s), &codes); err != nil {
 		return
 	}
 
-	for _, c := range codes {
-		if strings.ToLower(c.Text) == lang || c.Value == lang {
-			code = c.DefaultCode
-			return
-		}
+	if c := codes.Code(lang); c != nil {
+		code = c.DefaultCode
+		return
 	}
 	return
 }
@@ -74,7 +67,7 @@ func (q BaseQuestion) GetEnvInfo(lang string) (info []string, err error) {
 }
 
 func (q *BaseQuestion) Do(titleSlug string) error {
-	body := strings.NewReader(`{"query":"query getQuestionDetail($titleSlug: String!) {\n  isCurrentUserAuthenticated\n  question(titleSlug: $titleSlug) {\n    questionId\n    questionTitle\n    content\n    difficulty\n    discussUrl\n    libraryUrl\n    mysqlSchemas\n    randomQuestionUrl\n    sessionId\n    categoryTitle\n    submitUrl\n    interpretUrl\n    codeDefinition\n    sampleTestCase\n    enableTestMode\n    metaData\n    enableRunCode\n    enableSubmit\n    judgerAvailable\n    emailVerified\n    envInfo\n    urlManager\n    likesDislikes {\n      likes\n      dislikes\n      __typename\n    }\n    article\n    questionDetailUrl\n    isLiked\n    discussCategoryId\n    nextChallengePairs\n    __typename\n  }\n}\n","variables":{"titleSlug":"` +
+	body := strings.NewReader(`{"query":"query getQuestionDetail($titleSlug: String!) {\n  isCurrentUserAuthenticated\n  question(titleSlug: $titleSlug) {\n    questionId\n    questionTitle\n    content\n    difficulty\n    stats\n    contributors\n    companyTags\n    topicTags\n    similarQuestions\n    discussUrl\n    mysqlSchemas\n    randomQuestionUrl\n    sessionId\n    categoryTitle\n    submitUrl\n    interpretUrl\n    codeDefinition\n    sampleTestCase\n    enableTestMode\n    metaData\n    enableRunCode\n    enableSubmit\n    judgerAvailable\n    emailVerified\n    envInfo\n    urlManager\n    article\n    questionDetailUrl\n    discussCategoryId\n    discussSolutionCategoryId\n    __typename\n  }\n  subscribeUrl\n  isPremium\n  loginUrl\n}\n","variables":{"titleSlug":"` +
 		titleSlug + `"},"operationName":"getQuestionDetail"}`)
 	req, err := http.NewRequest("POST", "https://leetcode.com/graphql", body)
 	if err != nil {
