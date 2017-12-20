@@ -11,6 +11,7 @@ import (
 )
 
 type BaseQuestion struct {
+	Referer           string `json:"-"`
 	QuestionId        string `json:"questionId"`
 	QuestionTitle     string `json:"questionTitle"`
 	Content           string `json:"content"`
@@ -73,13 +74,14 @@ func (q *BaseQuestion) Do(titleSlug string) error {
 	if err != nil {
 		return err
 	}
+	q.Referer = fmt.Sprintf(
+		"https://leetcode.com/problems/%s/description/",
+		titleSlug,
+	)
 	req.Header.Set("x-csrftoken", "uvORacsFvMydVNFluzue7hUMzM1F77MnYRbl4VBKTLBTQmxte9SWIYcM0mMJUovA")
 	req.Header.Set("content-type", "application/json")
 	req.Header.Set("cache-control", "no-cache")
-	req.Header.Set("referer", fmt.Sprintf(
-		"https://leetcode.com/problems/%s/description/",
-		titleSlug,
-	))
+	req.Header.Set("referer", q.Referer)
 	client := &http.Client{
 		Timeout: time.Second * 15,
 	}
