@@ -12,6 +12,7 @@ import (
 
 type BaseQuestion struct {
 	Referer           string `json:"-"`
+	Codes             Codes  `json:"-"`
 	QuestionId        string `json:"questionId"`
 	QuestionTitle     string `json:"questionTitle"`
 	Content           string `json:"content"`
@@ -38,12 +39,11 @@ func (q BaseQuestion) GetCodeDefinition(lang string) (code string, err error) {
 		return
 	}
 
-	var codes Codes
-	if err = json.Unmarshal([]byte(s), &codes); err != nil {
+	if err = json.Unmarshal([]byte(s), &q.Codes); err != nil {
 		return
 	}
 
-	if c := codes.Code(lang); c != nil {
+	if c := q.Codes.Code(lang); c != nil {
 		code = c.DefaultCode
 		return
 	}
