@@ -34,15 +34,6 @@ func (q BaseQuestion) Valid() bool {
 }
 
 func (q BaseQuestion) GetCodeDefinition(lang string) (code string, err error) {
-	s, err := strconv.Unquote(strconv.Quote(q.CodeDefinition))
-	if err != nil {
-		return
-	}
-
-	if err = json.Unmarshal([]byte(s), &q.Codes); err != nil {
-		return
-	}
-
 	if c := q.Codes.Code(lang); c != nil {
 		code = c.DefaultCode
 		return
@@ -104,16 +95,22 @@ func (q *BaseQuestion) Do(titleSlug string) error {
 	}
 	defer res.Body.Close()
 
-	resp := &Response{
+	if err = json.Unmarshal(data, &Response{
 		Data: ResponseData{
 			Question: q,
 		},
-	}
-	if err = json.Unmarshal(data, &resp); err != nil {
+	}); err != nil {
 		return err
 	}
 
-	//println(fmt.Sprintf("resp: %#v", resp))
+	s, err := strconv.Unquote(strconv.Quote(q.CodeDefinition))
+	if err != nil {
+		return err
+	}
+
+	if err = json.Unmarshal([]byte(s), &q.Codes); err != nil {
+		return err
+	}
 
 	return nil
 }
