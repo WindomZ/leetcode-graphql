@@ -10,29 +10,33 @@ import (
 	"time"
 )
 
+// BaseQuestion the structure of the base question
 type BaseQuestion struct {
-	Referer           string `json:"-"`
-	Codes             Codes  `json:"-"`
-	QuestionId        string `json:"questionId"`
-	QuestionTitle     string `json:"questionTitle"`
-	Content           string `json:"content"`
-	Difficulty        string `json:"difficulty"`
-	DiscussUrl        string `json:"discussUrl"`
-	CategoryTitle     string `json:"categoryTitle"`
-	SubmitUrl         string `json:"submitUrl"`
-	InterpretUrl      string `json:"interpretUrl"`
-	CodeDefinition    string `json:"codeDefinition"`
-	MetaData          string `json:"metaData"`
-	EnvInfo           string `json:"envInfo"`
-	Article           string `json:"article"`
-	QuestionDetailUrl string `json:"questionDetailUrl"`
-	DiscussCategoryId string `json:"discussCategoryId"`
+	Problems          Problems `json:"-"`
+	Referer           string   `json:"-"`
+	Codes             Codes    `json:"-"`
+	QuestionId        string   `json:"questionId"`
+	QuestionTitle     string   `json:"questionTitle"`
+	Content           string   `json:"content"`
+	Difficulty        string   `json:"difficulty"`
+	DiscussUrl        string   `json:"discussUrl"`
+	CategoryTitle     string   `json:"categoryTitle"`
+	SubmitUrl         string   `json:"submitUrl"`
+	InterpretUrl      string   `json:"interpretUrl"`
+	CodeDefinition    string   `json:"codeDefinition"`
+	MetaData          string   `json:"metaData"`
+	EnvInfo           string   `json:"envInfo"`
+	Article           string   `json:"article"`
+	QuestionDetailUrl string   `json:"questionDetailUrl"`
+	DiscussCategoryId string   `json:"discussCategoryId"`
 }
 
+// Valid returns true if valid question
 func (q BaseQuestion) Valid() bool {
 	return q.QuestionId != "" && q.QuestionTitle != ""
 }
 
+// GetCodeDefinition returns code definition of question
 func (q BaseQuestion) GetCodeDefinition(lang string) (code string, err error) {
 	if c := q.Codes.Code(lang); c != nil {
 		code = c.DefaultCode
@@ -41,6 +45,7 @@ func (q BaseQuestion) GetCodeDefinition(lang string) (code string, err error) {
 	return
 }
 
+// GetEnvInfo returns env info
 func (q BaseQuestion) GetEnvInfo(lang string) (info []string, err error) {
 	s, err := strconv.Unquote(strconv.Quote(q.EnvInfo))
 	if err != nil {
@@ -58,7 +63,18 @@ func (q BaseQuestion) GetEnvInfo(lang string) (info []string, err error) {
 	return
 }
 
-func (q *BaseQuestion) Do(titleSlug string) error {
+// Do do requesting and parse the response data
+func (q *BaseQuestion) Do(key string) error {
+	titleSlug := key
+
+	// try to parse id
+	if q.Problems.Do() == nil {
+		if s := q.Problems.StatStatus(key); s != nil {
+			titleSlug = s.Stat.QuestionTitleSlug
+		}
+	}
+
+	// parse title slug
 	body := strings.NewReader(`{"query":"query getQuestionDetail($titleSlug: String!) {\n  isCurrentUserAuthenticated\n  question(titleSlug: $titleSlug) {\n    questionId\n    questionTitle\n    content\n    difficulty\n    stats\n    contributors\n    companyTags\n    topicTags\n    similarQuestions\n    discussUrl\n    mysqlSchemas\n    randomQuestionUrl\n    sessionId\n    categoryTitle\n    submitUrl\n    interpretUrl\n    codeDefinition\n    sampleTestCase\n    enableTestMode\n    metaData\n    enableRunCode\n    enableSubmit\n    judgerAvailable\n    emailVerified\n    envInfo\n    urlManager\n    article\n    questionDetailUrl\n    discussCategoryId\n    discussSolutionCategoryId\n    __typename\n  }\n  subscribeUrl\n  isPremium\n  loginUrl\n}\n","variables":{"titleSlug":"` +
 		titleSlug + `"},"operationName":"getQuestionDetail"}`)
 	req, err := http.NewRequest("POST", "https://leetcode.com/graphql", body)
@@ -95,7 +111,6 @@ func (q *BaseQuestion) Do(titleSlug string) error {
 	}
 	defer res.Body.Close()
 
-	println(string(data))
 	if err = json.Unmarshal(data, &Response{
 		Data: ResponseData{
 			Question: q,
