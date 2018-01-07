@@ -69,7 +69,7 @@ func (q *BaseQuestion) Do(titleSlug string) error {
 		"https://leetcode.com/problems/%s/description/",
 		titleSlug,
 	)
-	req.Header.Set("x-csrftoken", "uvORacsFvMydVNFluzue7hUMzM1F77MnYRbl4VBKTLBTQmxte9SWIYcM0mMJUovA")
+	req.Header.Set("x-csrftoken", "PFjkBC8UaI7A7RReC3PLChILqrrGcoIyOGwYeQq6bkOdcqRO3I9wUfaIgpwOZ82j")
 	req.Header.Set("content-type", "application/json")
 	req.Header.Set("cache-control", "no-cache")
 	req.Header.Set("referer", q.Referer)
@@ -78,7 +78,7 @@ func (q *BaseQuestion) Do(titleSlug string) error {
 	}
 	req.AddCookie(&http.Cookie{
 		Name:    "csrftoken",
-		Value:   "uvORacsFvMydVNFluzue7hUMzM1F77MnYRbl4VBKTLBTQmxte9SWIYcM0mMJUovA",
+		Value:   "PFjkBC8UaI7A7RReC3PLChILqrrGcoIyOGwYeQq6bkOdcqRO3I9wUfaIgpwOZ82j",
 		Path:    "/",
 		Domain:  ".leetcode.com",
 		Secure:  true,
@@ -95,6 +95,7 @@ func (q *BaseQuestion) Do(titleSlug string) error {
 	}
 	defer res.Body.Close()
 
+	println(string(data))
 	if err = json.Unmarshal(data, &Response{
 		Data: ResponseData{
 			Question: q,
