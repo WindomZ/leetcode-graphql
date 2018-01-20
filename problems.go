@@ -15,7 +15,7 @@ type Problems struct {
 	NumTotal        int                 `json:"num_total"`
 }
 
-// ProblemStatus the structure of a problem status
+// ProblemStatStatus the structure of a problem status
 type ProblemStatStatus struct {
 	Stat       ProblemStat `json:"stat"`
 	Difficulty struct {

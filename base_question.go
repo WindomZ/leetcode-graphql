@@ -15,25 +15,25 @@ type BaseQuestion struct {
 	Problems          Problems `json:"-"`
 	Referer           string   `json:"-"`
 	Codes             Codes    `json:"-"`
-	QuestionId        string   `json:"questionId"`
+	QuestionID        string   `json:"questionId"`
 	QuestionTitle     string   `json:"questionTitle"`
 	Content           string   `json:"content"`
 	Difficulty        string   `json:"difficulty"`
-	DiscussUrl        string   `json:"discussUrl"`
+	DiscussURL        string   `json:"discussUrl"`
 	CategoryTitle     string   `json:"categoryTitle"`
-	SubmitUrl         string   `json:"submitUrl"`
-	InterpretUrl      string   `json:"interpretUrl"`
+	SubmitURL         string   `json:"submitUrl"`
+	InterpretURL      string   `json:"interpretUrl"`
 	CodeDefinition    string   `json:"codeDefinition"`
 	MetaData          string   `json:"metaData"`
 	EnvInfo           string   `json:"envInfo"`
 	Article           string   `json:"article"`
-	QuestionDetailUrl string   `json:"questionDetailUrl"`
-	DiscussCategoryId string   `json:"discussCategoryId"`
+	QuestionDetailURL string   `json:"questionDetailUrl"`
+	DiscussCategoryID string   `json:"discussCategoryId"`
 }
 
 // Valid returns true if valid question
 func (q BaseQuestion) Valid() bool {
-	return q.QuestionId != "" && q.QuestionTitle != ""
+	return q.QuestionID != "" && q.QuestionTitle != ""
 }
 
 // GetCodeDefinition returns code definition of question
