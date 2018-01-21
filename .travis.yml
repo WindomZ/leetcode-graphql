@@ -12,6 +12,6 @@ before_install:
 script:
   - diff -u <(echo -n) <(gofmt -s -d ./)
   - diff -u <(echo -n) <(go vet ./...)
-  - diff -u <(echo -n) <(golint ./...)
+#  - diff -u <(echo -n) <(golint ./...)
   - $(go env GOPATH | awk 'BEGIN{FS=":"} {print $1}')/bin/goveralls -service=travis-ci
   - go test -v
