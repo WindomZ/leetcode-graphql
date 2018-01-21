@@ -1,0 +1,3 @@
+package leetcodegraphql
+
+const guestToken = "vdTxGbcQGGzMFXRuo3N59rdauXjaORJCl8aere3Yfav92iQI1PCnqJZxLNI9wpwl"

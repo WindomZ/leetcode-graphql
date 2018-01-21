@@ -75,7 +75,7 @@ func (q *BaseQuestion) Do(key string) error {
 	}
 
 	// parse title slug
-	body := strings.NewReader(`{"query":"query getQuestionDetail($titleSlug: String!) {\n  isCurrentUserAuthenticated\n  question(titleSlug: $titleSlug) {\n    questionId\n    questionTitle\n    content\n    difficulty\n    stats\n    contributors\n    companyTags\n    topicTags\n    similarQuestions\n    discussUrl\n    mysqlSchemas\n    randomQuestionUrl\n    sessionId\n    categoryTitle\n    submitUrl\n    interpretUrl\n    codeDefinition\n    sampleTestCase\n    enableTestMode\n    metaData\n    enableRunCode\n    enableSubmit\n    judgerAvailable\n    emailVerified\n    envInfo\n    urlManager\n    article\n    questionDetailUrl\n    discussCategoryId\n    discussSolutionCategoryId\n    __typename\n  }\n  subscribeUrl\n  isPremium\n  loginUrl\n}\n","variables":{"titleSlug":"` +
+	body := strings.NewReader(`{"query":"query getQuestionDetail($titleSlug: String!) {\n  isCurrentUserAuthenticated\n  question(titleSlug: $titleSlug) {\n    questionId\n    questionFrontendId\n    questionTitle\n    questionTitleSlug\n    content\n    difficulty\n    stats\n    contributors\n    companyTags\n    topicTags\n    similarQuestions\n    discussUrl\n    mysqlSchemas\n    randomQuestionUrl\n    sessionId\n    categoryTitle\n    submitUrl\n    interpretUrl\n    codeDefinition\n    sampleTestCase\n    enableTestMode\n    metaData\n    enableRunCode\n    enableSubmit\n    judgerAvailable\n    infoVerified\n    envInfo\n    urlManager\n    article\n    questionDetailUrl\n    discussCategoryId\n    discussSolutionCategoryId\n  }\n  subscribeUrl\n  isPremium\n  loginUrl\n}\n","variables":{"titleSlug":"` +
 		titleSlug + `"},"operationName":"getQuestionDetail"}`)
 	req, err := http.NewRequest("POST", "https://leetcode.com/graphql", body)
 	if err != nil {
@@ -85,7 +85,7 @@ func (q *BaseQuestion) Do(key string) error {
 		"https://leetcode.com/problems/%s/description/",
 		titleSlug,
 	)
-	req.Header.Set("x-csrftoken", "PFjkBC8UaI7A7RReC3PLChILqrrGcoIyOGwYeQq6bkOdcqRO3I9wUfaIgpwOZ82j")
+	req.Header.Set("x-csrftoken", guestToken)
 	req.Header.Set("content-type", "application/json")
 	req.Header.Set("cache-control", "no-cache")
 	req.Header.Set("referer", q.Referer)
@@ -94,7 +94,7 @@ func (q *BaseQuestion) Do(key string) error {
 	}
 	req.AddCookie(&http.Cookie{
 		Name:    "csrftoken",
-		Value:   "PFjkBC8UaI7A7RReC3PLChILqrrGcoIyOGwYeQq6bkOdcqRO3I9wUfaIgpwOZ82j",
+		Value:   guestToken,
 		Path:    "/",
 		Domain:  ".leetcode.com",
 		Secure:  true,
