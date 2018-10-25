@@ -7,7 +7,7 @@ go: master
 before_install:
   - go get github.com/WindomZ/testify/assert
   - go get github.com/mattn/goveralls
-  - go get github.com/golang/lint/golint
+  - go get golang.org/x/lint/golint
 
 script:
   - diff -u <(echo -n) <(gofmt -s -d ./)
