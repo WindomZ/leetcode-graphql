@@ -1,3 +1,3 @@
 package leetcodegraphql
 
-const guestToken = "rTu0URPO7j89Sdkd8OU0QMoqmllMcTxNy393H44PoJDCTnXuoGMXplHvU4p3tyxY"
+const guestToken = "uVAcMSJE33Sc9Pj24P3v4pEZnjngJDbs5yElxS2vXKCnMkjUzwQoNpaoP4UmJxcd"
